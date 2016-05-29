@@ -1,39 +1,37 @@
 'use strict';
 
-// npm module
+// npm modules
 const Router = require('express').Router;
+const deityRouter = module.exports = new Router();
 const bodyParser = require('body-parser').json();
-const debug = require('debug')('note:deity-router');
+const debug = require('debug')('deity:deity-router');
 
 // app modules
-const deityRouter = module.exports = new Router();
 const AppError = require('../lib/app-error');
 const storage = require('../lib/storage');
 const Deity = require('../model/deity');
 
-function createDeity(reqbody) {
+function createDeity(reqbody) { // creates a Deity abject and sets it with the storage module
   debug('createDeity');
   return new Promise(function(resolve, reject) {
     var deity;
     try {
       deity = new Deity(reqbody.name, reqbody.power);
     } catch (err) {
-      reject(err);
+      return reject(err);
     }
     storage.setItem('deity', deity).then(function(deity) {
       resolve(deity);
-    }).catch(function(err) {
-      reject(err);
     });
   });
 }
 
-deityRouter.post('/', bodyParser, function(req, res) {
+deityRouter.post('/', bodyParser, function(req, res) { // route for POST method
   debug('hit post endpoint');
   createDeity(req.body).then(function(deity) {
     res.status(200).json(deity);
   }).catch(function(err) {
-    console.error(err.message);
+    console.error(err);
     if (AppError.isAppError(err)) {
       res.status(err.statusCode).send(err.responseMessage);
       return;
@@ -42,7 +40,7 @@ deityRouter.post('/', bodyParser, function(req, res) {
   });
 });
 
-deityRouter.get('/:id', function(req, res) {
+deityRouter.get('/:id', function(req, res) { // route for GET method
   debug('hit get endpoint');
   storage.fetchItem('deity', req.params.id).then(function(deity) {
     res.status(200).json(deity);
@@ -56,20 +54,21 @@ deityRouter.get('/:id', function(req, res) {
   });
 });
 
-deityRouter.put('/', bodyParser, function(req, res){
+deityRouter.put('/:id', bodyParser, function(req, res){ // route for PUT method
   debug('hit put endpoint');
-  storage.updateItem('deity', req.params.id).then(function(deity){
+  storage.updateItem('deity', req.params.id, req.body).then(function(deity){
     res.status(200).json(deity);
   }).catch(function(err) {
     console.error(err.message);
     if (AppError.isAppError(err)) {
       res.status(err.statusCode).send(err.responseMessage);
+      return;
     }
     res.status(500).send('server error');
   });
 });
 
-deityRouter.delete('/:id', function(req, res){
+deityRouter.delete('/:id', function(req, res){ // route for DELETE method
   debug('hit delte route');
   storage.deleteItem('deity', req.params.id).then(function(deity){
     res.status(200).json(deity);
@@ -77,6 +76,7 @@ deityRouter.delete('/:id', function(req, res){
     console.error(err.message);
     if (AppError.isAppError(err)) {
       res.status(err.statusCode).send(err.responseMessage);
+      return;
     }
     res.status(500).send('server error');
   });

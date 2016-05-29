@@ -1,6 +1,6 @@
 'use strict';
 
-const debug = require('debug')('note:storage');
+const debug = require('debug')('deity:storage');
 const AppError = require('./app-error');
 
 exports.pool = {};
@@ -44,7 +44,12 @@ exports.updateItem = function(schema, id, updateContent){
       err = AppError.error404('storage update item not found');
       return reject(err);
     }
-    this.pool[schema][id].content = updateContent.content;
+    if(this.pool[schema][id].power) {
+      this.pool[schema][id].power = updateContent.power;
+    }
+    if(this.pool[schema][id].name){
+      this.pool[schema][id].name = updateContent.name;
+    }
     resolve(this.pool[schema][id]);
   });
 };

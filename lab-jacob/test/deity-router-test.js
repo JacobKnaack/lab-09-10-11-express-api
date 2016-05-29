@@ -4,7 +4,7 @@
 const expect = require('chai').expect;
 const request = require('superagent');
 
-// app constants
+// app modules
 const server = require('../server');
 const storage = require('../lib/storage');
 const Deity = require('../model/deity');
@@ -14,7 +14,7 @@ const port = process.env.PORT || 3000;
 const homeUrl = `localhost:${port}/api/deity`;
 
 describe('testing the router module', function(){
-  before((done) => {
+  before((done) => { // turns on the server for testing
     if (!server.isRunning){
       server.listen(port, () => {
         server.isRunning = true;
@@ -26,9 +26,10 @@ describe('testing the router module', function(){
     done();
   });
 
-  after((done) => {
+  after((done) => { // turns off the server when testing is done
     if (server.isRunning){
       server.close(() =>{
+        server.isRunning = false;
         console.log('server is closed');
         done();
       });
@@ -37,27 +38,41 @@ describe('testing the router module', function(){
     done();
   });
 
-  describe('testing post endpoint', function() {
-    after ((done) => {
-      storage.pool = {};
-      done();
+  describe('testing post on /api/deity', function() {
+    describe('successful post', function(){
+      after ((done) => { // deletes the storage pool after resource creation
+        storage.pool = {};
+        done();
+      });
+
+      it ('should return a deity', function(done){
+        request.post(homeUrl)
+        .send({name: 'testytesterson', power: 'tests the shit out of everything'})
+        .end((err, res) => {
+          expect(res.status).to.equal(200);
+          expect(res.body.name).to.equal('testytesterson');
+          expect(!!res.body.id);
+          done();
+        });
+      });
     });
 
-    it ('should return a deity', function(done){
-      request.post(homeUrl)
-      .send({name: 'testytesterson', power: 'tests the shit out of everything'})
-      .end((err, res) => {
-        expect(res.status).to.equal(200);
-        expect(res.body.name).to.equal('testytesterson');
-        expect(!!res.body.id);
-        done();
+    describe('testing bad request', function() {
+      it('should return an error', function(done){
+        request.post(homeUrl)
+        .send({})
+        .end((err, res) => {
+          expect(res.status).to.equal(400);
+          expect(res.text).to.equal('bad request');
+          done();
+        });
       });
     });
   });
 
-  describe('testing the get endpoint', function(){
-    before((done) => {
-      this.tempDeity = new Deity('testorpheus', 'testibolts');
+  describe('testing the get on /api/deity', function(){
+    before((done) => { // creates a temporary deity for testing
+      this.tempDeity = new Deity('testorpheus', 'testibolts!!');
       storage.setItem('deity', this.tempDeity);
       done();
     });
@@ -73,6 +88,29 @@ describe('testing the router module', function(){
         expect(res.status).to.equal(200);
         expect(res.body.name).to.equal(this.tempDeity.name);
         expect(res.body.id).to.equal(this.tempDeity.id);
+        done();
+      });
+    });
+  });
+
+  describe('testing the put on /api/deity', function(){
+    before((done) => {
+      this.tempDeity = new Deity('testiface', 'spaghetti fingers!');
+      storage.setItem('deity', this.tempDeity);
+      done();
+    });
+
+    after((done) => {
+      storage.pool = {};
+      done();
+    });
+
+    it('should return an updated Deity', (done) => {
+      request.put(`${homeUrl}/${this.tempDeity.id}`)
+      .send({power: 'testing put methods'})
+      .end((err, res) => {
+        expect(res.status).to.equal(200);
+        expect(res.body.power).to.equal('testing put methods');
         done();
       });
     });

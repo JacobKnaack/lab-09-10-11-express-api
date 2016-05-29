@@ -3,7 +3,7 @@
 const expect = require('chai').expect;
 const storage = require('../lib/storage.js');
 
-describe('testing modules storage', function(){
+describe('testing storage modules', function(){
   describe('testing setItem', function(){
     after((done) => {
       delete storage.pool.note;
