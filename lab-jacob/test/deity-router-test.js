@@ -39,7 +39,7 @@ describe('testing the router module', function(){
   });
 
   describe('testing post on /api/deity', function() {
-    describe('successful post', function(){
+    describe('successful POST', function(){
       after ((done) => { // deletes the storage pool after resource creation
         storage.pool = {};
         done();
@@ -58,7 +58,7 @@ describe('testing the router module', function(){
     });
 
     describe('testing bad request', function() {
-      it('should return an error', function(done){
+      it('should return a 400', function(done){
         request.post(homeUrl)
         .send({})
         .end((err, res) => {
