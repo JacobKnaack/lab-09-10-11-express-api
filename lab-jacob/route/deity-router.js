@@ -7,7 +7,6 @@ const bodyParser = require('body-parser').json();
 const debug = require('debug')('deity:deity-router');
 
 // app modules
-const AppError = require('../lib/app-error');
 const storage = require('../lib/storage');
 const Deity = require('../model/deity');
 
@@ -32,11 +31,7 @@ deityRouter.post('/', bodyParser, function(req, res) { // route for POST method
     res.status(200).json(deity);
   }).catch(function(err) {
     console.error(err);
-    if (AppError.isAppError(err)) {
-      res.status(err.statusCode).send(err.responseMessage);
-      return;
-    }
-    res.status(500).send('server error');
+    res.sendError(err);
   });
 });
 
@@ -46,11 +41,7 @@ deityRouter.get('/:id', function(req, res) { // route for GET method
     res.status(200).json(deity);
   }).catch(function(err) {
     console.error(err.message);
-    if (AppError.isAppError(err)) {
-      res.status(err.statusCode).send(err.responseMessage);
-      return;
-    }
-    res.status(500).send('server error');
+    res.sendError(err);
   });
 });
 
@@ -60,11 +51,7 @@ deityRouter.put('/:id', bodyParser, function(req, res){ // route for PUT method
     res.status(200).json(deity);
   }).catch(function(err) {
     console.error(err.message);
-    if (AppError.isAppError(err)) {
-      res.status(err.statusCode).send(err.responseMessage);
-      return;
-    }
-    res.status(500).send('server error');
+    res.sendError(err);
   });
 });
 
@@ -74,10 +61,6 @@ deityRouter.delete('/:id', function(req, res){ // route for DELETE method
     res.status(200).json(deity);
   }).catch(function(err){
     console.error(err.message);
-    if (AppError.isAppError(err)) {
-      res.status(err.statusCode).send(err.responseMessage);
-      return;
-    }
-    res.status(500).send('server error');
+    res.sendError(err);
   });
 });

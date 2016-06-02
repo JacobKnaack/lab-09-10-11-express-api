@@ -38,9 +38,9 @@ describe('testing the router module', function(){
     done();
   });
 
-  describe('testing post on /api/deity', function() {
-    describe('successful POST', function(){
-      after ((done) => { // deletes the storage pool after resource creation
+  describe('testing post on /api/deity', function() { // testing the POST meethods*****************
+    describe('testing a successful POST', function(){
+      after ((done) => { // deletes the storage pool after test ceration
         storage.pool = {};
         done();
       });
@@ -57,7 +57,7 @@ describe('testing the router module', function(){
       });
     });
 
-    describe('testing bad request', function() {
+    describe('testing bad request for POST', function() {
       it('should return a 400', function(done){
         request.post(homeUrl)
         .send({})
@@ -70,48 +70,87 @@ describe('testing the router module', function(){
     });
   });
 
-  describe('testing the get on /api/deity', function(){
-    before((done) => { // creates a temporary deity for testing
-      this.tempDeity = new Deity('testorpheus', 'testibolts!!');
-      storage.setItem('deity', this.tempDeity);
-      done();
-    });
-
-    after((done) => {
-      storage.pool = {};
-      done();
-    });
-
-    it('should return a Deity', (done) => {
-      request.get(`${homeUrl}/${this.tempDeity.id}`)
-      .end((err, res) => {
-        expect(res.status).to.equal(200);
-        expect(res.body.name).to.equal(this.tempDeity.name);
-        expect(res.body.id).to.equal(this.tempDeity.id);
+  describe('testing the GET on /api/deity', function(){ // testing the GET methods****************
+    describe('testing a successful GET', function() {
+      before((done) => { // creates a temporary deity for testing
+        this.tempDeity = new Deity('testorpheus', 'testibolts!!');
+        storage.setItem('deity', this.tempDeity);
         done();
+      });
+
+      after((done) => { // deletes deity when tests finish
+        storage.pool = {};
+        done();
+      });
+
+      it('should return a Deity', (done) => {
+        request.get(`${homeUrl}/${this.tempDeity.id}`)
+        .end((err, res) => {
+          expect(res.status).to.equal(200);
+          expect(res.body.name).to.equal(this.tempDeity.name);
+          expect(res.body.id).to.equal(this.tempDeity.id);
+          done();
+        });
+      });
+
+      describe('testing not found GET request', () => {
+        it('should return an error 404', (done) => {
+          request.get(`${homeUrl}/${12374724}`)
+          .end((err, res) => {
+            expect(res.status).to.equal(404);
+            expect(res.text).to.equal('not found');
+            done();
+          });
+        });
+      });
+
+      describe('testing a bad request GET request', () => {
+        it('should return an error 400', (done) => {
+          request.get(`${homeUrl}`)
+          .send({undefined})
+          .end((err, res) => {
+            expect(res.status).to.equal(400);
+            expect(res.text).to.equal('bad request');
+            done();
+          });
+        });
       });
     });
   });
 
-  describe('testing the put on /api/deity', function(){
-    before((done) => {
-      this.tempDeity = new Deity('testiface', 'spaghetti fingers!');
-      storage.setItem('deity', this.tempDeity);
-      done();
-    });
-
-    after((done) => {
-      storage.pool = {};
-      done();
-    });
-
-    it('should return an updated Deity', (done) => {
-      request.put(`${homeUrl}/${this.tempDeity.id}`)
-      .send({power: 'testing put methods'})
-      .end((err, res) => {
-        expect(res.status).to.equal(200);
-        expect(res.body.power).to.equal('testing put methods');
+  describe('testing the put on /api/deity', function(){ // testing the PUT methods*************
+    describe('testing successful PUT', function(){
+      before((done) => {
+        this.tempDeity = new Deity('testiface', 'spaghetti fingers!');
+        storage.setItem('deity', this.tempDeity);
         done();
+      });
+
+      after((done) => {
+        storage.pool = {};
+        done();
+      });
+
+      it('should return an updated Deity', (done) => {
+        request.put(`${homeUrl}/${this.tempDeity.id}`)
+        .send({power: 'testing put methods'})
+        .end((err, res) => {
+          expect(res.status).to.equal(200);
+          expect(res.body.power).to.equal('testing put methods');
+          done();
+        });
+      });
+
+      describe('testing bad put request', () => {
+        it('should return a bad request', (done) => {
+          request.put(`${homeUrl}/${{}}`)
+          .send({power: 'some power'})
+          .end((err, res) => {
+            expect(res.status).to.equal(400);
+            expect(res.body.power).to.equal(undefined);
+            done();
+          });
+        });
       });
     });
   });
