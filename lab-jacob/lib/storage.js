@@ -22,14 +22,11 @@ exports.fetchItem = function(schema, id){
   debug('fetchItem');
   return new Promise((resolve, reject) => {
     if (!this.pool[schema]){
-      console.log(this.pool);
       var err = AppError.error404('storage schema not found');
       return reject(err);
     }
     if (!this.pool[schema][id]){
-      console.log(this.pool[schema]);
       if (this.pool[schema][id] === undefined){
-        console.log(this.pool[schema][id]);
         err = AppError.error400('bad GET request');
         return reject(err);
       }
@@ -43,12 +40,12 @@ exports.fetchItem = function(schema, id){
 exports.updateItem = function(schema, id, updateContent){
   debug('inside update Item');
   return new Promise((resolve, reject) => {
-    if (!this.pool[schema][id]) {
-      var err = AppError.error400('storage update item not found');
+    if (!this.pool[schema]) {
+      var err = AppError.error400('bad PUT request');
       return reject(err);
     }
     if (!this.pool[schema][id]){
-      err = AppError.error400('storage update item not found');
+      err = AppError.error400('bad PUT request');
       return reject(err);
     }
     if(this.pool[schema][id].power) {

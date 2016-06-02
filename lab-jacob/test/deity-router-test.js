@@ -92,31 +92,53 @@ describe('testing the router module', function(){
           done();
         });
       });
+    });
 
-      describe('testing not found GET request', () => {
-        it('should return an error 404', (done) => {
-          request.get(`${homeUrl}/${12374724}`)
-          .end((err, res) => {
-            expect(res.status).to.equal(404);
-            expect(res.text).to.equal('not found');
-            done();
-          });
-        });
+    describe('testing not found GET request', () => {
+      before((done) => {
+        this.tempDeity = new Deity('testorpheus', 'testibolts!!');
+        storage.setItem('deity', this.tempDeity);
+        done();
       });
 
-      describe('testing a bad request GET request', () => {
-        it('should return an error 400', (done) => {
-          request.get(`${homeUrl}`)
-          .send({undefined})
-          .end((err, res) => {
-            expect(res.status).to.equal(400);
-            expect(res.text).to.equal('bad request');
-            done();
-          });
+      after((done) => {
+        storage.pool = {};
+        done();
+      });
+
+      it('should return an error 404', (done) => {
+        request.get(`${homeUrl}/${512461374653}`)
+        .end((err, res) => {
+          expect(res.status).to.equal(404);
+          expect(res.text).to.equal('not found');
+          done();
+        });
+      });
+    });
+
+    describe('testing a bad request GET request', () => {
+      before((done) => {
+        this.tempDeity = new Deity('testorpheus', 'testibolts!!');
+        storage.setItem('deity', this.tempDeity);
+        done();
+      });
+
+      after((done) => {
+        storage.pool = {};
+        done();
+      });
+
+      it('should return an error 400', (done) => {
+        request.get(`${homeUrl}/${{}}`)
+        .end((err, res) => {
+          expect(res.status).to.equal(400);
+          expect(res.text).to.equal('bad request');
+          done();
         });
       });
     });
   });
+
 
   describe('testing the put on /api/deity', function(){ // testing the PUT methods*************
     describe('testing successful PUT', function(){
