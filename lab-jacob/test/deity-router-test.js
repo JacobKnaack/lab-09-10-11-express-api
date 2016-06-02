@@ -107,7 +107,8 @@ describe('testing the router module', function(){
       });
 
       it('should return an error 404', (done) => {
-        request.get(`${homeUrl}/${512461374653}`)
+        request.get(`${homeUrl}/`)
+        .query({id: 1235766879648972634})
         .end((err, res) => {
           expect(res.status).to.equal(404);
           expect(res.text).to.equal('not found');
