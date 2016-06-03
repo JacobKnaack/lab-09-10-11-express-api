@@ -1,0 +1,39 @@
+{
+  "name": "express-server-code401",
+  "version": "0.1.0",
+  "description": "code fellows lab express server",
+  "main": "server.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JacobKnaack/lab-09-10-11-express-api.git"
+  },
+  "author": "Jacob Knaack",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JacobKnaack/lab-09-10-11-express-api/issues"
+  },
+  "homepage": "https://github.com/JacobKnaack/lab-09-10-11-express-api#readme",
+  "dependencies": {
+    "body-parser": "^1.15.1",
+    "express": "^4.13.4",
+    "morgan": "^1.7.0",
+    "node-uuid": "^1.4.7"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "debug": "^2.2.0",
+    "gulp": "^3.9.1",
+    "gulp-eslint": "^2.0.0",
+    "gulp-mocha": "^2.2.0",
+    "gulp-nodemon": "^2.0.7",
+    "mocha": "^2.5.3",
+    "superagent": "^2.0.0-alpha.3"
+  }
+}
