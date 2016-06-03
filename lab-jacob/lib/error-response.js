@@ -3,7 +3,7 @@
 const debug = require('debug')('deity:error-response');
 const AppError = require('./app-error');
 
-module.exports = function(req, res, next) {
+module.exports = function(req, res, next) { // our error response middleware for sending errors on the response object
   res.sendError = function(err){
     debug('inside error-response');
     console.error(err.message);

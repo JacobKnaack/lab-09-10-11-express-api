@@ -27,7 +27,7 @@ app.all('*', function(req, res) { // sends a 404 for all routes/methods when dei
   }
 });
 
-const server = app.listen(port, function(){
+const server = app.listen(port, function(){ // starts the server
   debug('listen');
   console.log('server up on port:', port);
 });
