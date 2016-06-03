@@ -5,7 +5,7 @@ const AppError = require('./app-error');
 
 exports.pool = {};
 
-exports.setItem = function(schema, item) {
+exports.setItem = function(schema, item) { // creates a resource and puts it in the resource pool
   debug('setItem');
   return new Promise((resolve, reject) => {
     if (!item.id) {
@@ -18,7 +18,7 @@ exports.setItem = function(schema, item) {
   });
 };
 
-exports.fetchItem = function(schema, id){
+exports.fetchItem = function(schema, id){ // fetches a resource from the pool
   debug('fetchItem');
   return new Promise((resolve, reject) => {
     if (!this.pool[schema]){
@@ -37,7 +37,7 @@ exports.fetchItem = function(schema, id){
   });
 };
 
-exports.updateItem = function(schema, id, updateContent){
+exports.updateItem = function(schema, id, updateContent){ // updates a resource item from the pool
   debug('inside update Item');
   return new Promise((resolve, reject) => {
     if (!this.pool[schema]) {
@@ -58,7 +58,7 @@ exports.updateItem = function(schema, id, updateContent){
   });
 };
 
-exports.deleteItem = function(schema, id){
+exports.deleteItem = function(schema, id){ // deltes a resource from the pool
   debug('deleteItem');
   return new Promise((resolve, reject) => {
     if (!this.pool[schema]){
